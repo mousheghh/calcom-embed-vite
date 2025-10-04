@@ -1,9 +1,20 @@
 // src/App.jsx
 import { useEffect, useState } from 'react';
 import { Booker } from '@calcom/atoms';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import './App.css';
 
-function App() {
+// Create a client outside the component to prevent recreation on re-renders
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+});
+
+function BookerComponent() {
   const [username, setUsername] = useState('');
   const [eventSlug, setEventSlug] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -90,6 +101,14 @@ function App() {
         }}
       />
     </div>
+  );
+}
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <BookerComponent />
+    </QueryClientProvider>
   );
 }
 
